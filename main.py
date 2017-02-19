@@ -1,6 +1,7 @@
 import sys, getopt
 import quantize
 import numpy
+import matplotlib.pyplot as plt
 
 def main(argv):
   inputFile = ""
@@ -26,15 +27,6 @@ def main(argv):
     elif opt in ("-r"):
       numLevels = arg
 
-  print()
-  print("Input file is: ", inputFile)
-  print("Output file is: ", outputFile)
-  print("Number reconstruction levels: ", numLevels)
-  print()
-  print("opts: ", opts)
-  print("args: ", args)
-  print()
-
   # load image as array
   imgArray = quantize.load_image_as_array(inputFile)
   print(imgArray)
@@ -57,12 +49,25 @@ def main(argv):
   shouldn't be any larger than an integer max size in pixel width
   '''
 
-  a = quantize.init_recon_array_random(imgLength, numLevels)
-  if (a == -1):
+  recon = quantize.init_recon_array_random(imgLength, numLevels)
+  #recon = quantize.init_recon_array_random(10, 5)
+  if (recon == -1):
     print("Invalid args for reconstruction array\n")
     sys.exit()
+
+  # plot reconstruction lines
+  plt.hist(imgArray, 255, align='mid')
+
+  i = 0
+  while (i < len(recon)):
+    if (recon[i] == 1):
+      print("idx: ", i)
+      print("  val: ", recon[i])
+      plt.axhline(i/256, color='red')
+      print(i/256)
+    i += 1
     
-  print(a)
+  plt.show()
 
 if __name__ == "__main__":
   main(sys.argv[1:])
