@@ -1,5 +1,6 @@
 import sys, getopt
 import quantize
+import numpy
 
 def main(argv):
   inputFile = ""
@@ -37,11 +38,17 @@ def main(argv):
   # load image as array
   imgArray = quantize.load_image_as_array(inputFile)
   print(imgArray)
+  print(imgArray.shape)
+  print()
+
+  # reshape array
+  imgArray = imgArray.flatten()
+  print("New dimensions: ", imgArray.shape)
   print()
 
   # determine length
-  length = len(imgArray)
-  print("length: ", length)
+  imgLength = len(imgArray)
+  print("length: ", imgLength)
   print()
 
   # create reconstruction level array
@@ -49,6 +56,13 @@ def main(argv):
   this will just be done with integer elements since our picture
   shouldn't be any larger than an integer max size in pixel width
   '''
+
+  a = quantize.init_recon_array_random(imgLength, numLevels)
+  if (a == -1):
+    print("Invalid args for reconstruction array\n")
+    sys.exit()
+    
+  print(a)
 
 if __name__ == "__main__":
   main(sys.argv[1:])
