@@ -33,40 +33,54 @@ def main(argv):
   print(imgArray.shape)
   print()
 
-  # reshape array
+  # reshape array from 2D to 1D
   imgArray = imgArray.flatten()
-  print("New dimensions: ", imgArray.shape)
-  print()
 
-  # determine length
+  # determine length (THIS IS THE DENOM FOR PROBABILITY)
   imgLength = len(imgArray)
   print("length: ", imgLength)
   print()
 
+  # determine frequencies
+  i = 0
+  freqArray = [1] * 256
+  while (i < len(imgArray)):
+    freqArray[imgArray[i]] += 1
+    i += 1
+
+  # determine probabilities
+  probArray = [f / imgLength for f in freqArray]
+  
+  # plot probabilities
+  axes = plt.gca()
+  axes.set_xlim([0, 255])
+  plt.plot(probArray)
+  
   # create reconstruction level array
   '''
   this will just be done with integer elements since our picture
   shouldn't be any larger than an integer max size in pixel width
   '''
-
-  recon = quantize.init_recon_array_random(imgLength, numLevels)
-  #recon = quantize.init_recon_array_random(10, 5)
+  recon = quantize.init_recon_array_random(256, numLevels)
   if (recon == -1):
     print("Invalid args for reconstruction array\n")
     sys.exit()
-
+  
   # plot reconstruction lines
-  plt.hist(imgArray, 255, align='mid')
-
   i = 0
   while (i < len(recon)):
     if (recon[i] == 1):
-      print("idx: ", i)
-      print("  val: ", recon[i])
-      plt.axhline(i/256, color='red')
-      print(i/256)
+      #print("idx: ", i)
+      #print("  val: ", recon[i])
+      #plt.axhline(i/256, color='red')
+      plt.axvline(i, color='red')
+      #print(i/256)
     i += 1
-    
+
+  # Labels and show graph
+  plt.xlabel('Pixel value')
+  plt.ylabel('Probability')
+  plt.title('Probability of Pixel Values')
   plt.show()
 
 if __name__ == "__main__":
