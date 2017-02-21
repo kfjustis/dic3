@@ -27,6 +27,7 @@ def main(argv):
     elif opt in ("-r"):
       numLevels = arg
 
+  
   # load image as array
   imgArray = quantize.load_image_as_array(inputFile)
   print(imgArray)
@@ -40,7 +41,12 @@ def main(argv):
   imgLength = len(imgArray)
   print("length: ", imgLength)
   print()
-
+  
+  '''
+  mu, sigma = 0, 10 # want variance to be 100
+  arr = numpy.random.normal(mu, sigma, 1000)
+  '''
+  
   # determine frequencies
   i = 0
   freqArray = [1] * 256
@@ -57,10 +63,6 @@ def main(argv):
   plt.plot(probArray)
   
   # create reconstruction level array
-  '''
-  this will just be done with integer elements since our picture
-  shouldn't be any larger than an integer max size in pixel width
-  '''
   recon = quantize.init_recon_array_random(256, numLevels)
   if (recon == -1):
     print("Invalid args for reconstruction array\n")
@@ -70,11 +72,7 @@ def main(argv):
   i = 0
   while (i < len(recon)):
     if (recon[i] == 1):
-      #print("idx: ", i)
-      #print("  val: ", recon[i])
-      #plt.axhline(i/256, color='red')
       plt.axvline(i, color='red')
-      #print(i/256)
     i += 1
 
   # Labels and show graph
